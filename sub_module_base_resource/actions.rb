@@ -18,8 +18,8 @@ module SubModuleBaseResource
     # or in ruby > 2.2, child can call parent method use below method
     # method(:index).super_method.call
 
-    def show
-      resource = find_base_resource
+    def show resources = nil
+      resource = find_base_resource resources
       instance_variable_set("@#{resource_name(resource)}", resource)
       if block_given?
         yield(resource)
@@ -87,9 +87,9 @@ module SubModuleBaseResource
       search.result(distinct: true)
     end
 
-    def find_base_resource(id = nil)
-      id ||= respond_to?(:params) && params.is_a?(ActionController::Parameters) && params[:id]
-      resource_klass.find id
+    def find_base_resource resources = nil
+      id = respond_to?(:params) && params.is_a?(ActionController::Parameters) && params[:id]
+      (resources || resource_klass).find id
     end
 
     def destroy_resource(id = nil)
