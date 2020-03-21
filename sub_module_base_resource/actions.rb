@@ -101,6 +101,7 @@ module SubModuleBaseResource
       namespaces = self.class.to_s.split("::")
       const = while namespaces.present?
                 const = "#{namespaces.join('::')}::#{resource_klass_name}Form::#{action_name.classify}".constantize rescue nil
+                #p "#{namespaces.join('::')}::#{resource_klass_name}Form::#{action_name.classify}"
                 break const if const
                 namespaces.pop
               end

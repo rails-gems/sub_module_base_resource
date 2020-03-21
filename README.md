@@ -24,6 +24,11 @@ gem 'ransack'
 ### 引入
 
 ```ruby
+# config/application.rb
+config.autoload_paths << Rails.root.join('lib/submodules/sub_module_base_resource') 
+```
+
+```ruby
 class ApplicationController < ActionController::Base
   include SubModuleBaseResource
 end
