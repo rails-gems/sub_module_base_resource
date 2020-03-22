@@ -25,7 +25,9 @@ gem 'ransack'
 
 ```ruby
 # config/application.rb
-config.autoload_paths << Rails.root.join('lib/submodules/sub_module_base_resource') 
+config.eager_load_paths << Rails.root.join('lib/submodules/sub_module_base_resource')
+# autoload_paths在生产环境可能无法加载， 不推荐 -> https://www.jianshu.com/p/e4446432e9cb
+#config.autoload_paths << Rails.root.join('lib/submodules/sub_module_base_resource') 
 ```
 
 ```ruby
