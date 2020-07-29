@@ -37,12 +37,16 @@ module SubModuleBaseResource
             yield hash, form
           end if block_given?
         else
-          if form.save
-            yield true if block_given?
-            render json: { message: :successfully_create }, status: 200  and return if options[:auto_render_success]
-          else
-            yield false if block_given?
-            render json: { message: form.errors.full_messages.first || form.model.errors.full_messages.first }, status: 422 and return if options[:auto_render_error]
+          begin
+            if form.save
+              yield true if block_given?
+              render json: { message: :successfully_create }, status: 200  and return if options[:auto_render_success]
+            else
+              yield false if block_given?
+              render json: { message: form.errors.full_messages.first || form.model.errors.full_messages.first }, status: 422 and return if options[:auto_render_error]
+            end
+          rescue StandardError => e
+            render json: { message: e.message }, status: 422 and return if options[:auto_render_error]
           end
         end
       else
@@ -54,17 +58,22 @@ module SubModuleBaseResource
 
     def update resource = nil
       form = form_const.new(resource || resource_klass.find(params[:id]))
-      if form.validate(params) && form.save
-        resource = form.model
-        instance_variable_set("@#{resource_name(resource)}", resource)
-        if block_given?
-          yield resource
+      begin
+        if form.validate(params) && form.save
+          resource = form.model
+          instance_variable_set("@#{resource_name(resource)}", resource)
+          if block_given?
+            yield resource
+          else
+            render json: { message: :successfully_update }, status: 200
+          end
         else
-          render json: { message: :successfully_update }, status: 200
+          render json: { message: form.errors.full_messages.first || form.model.errors.full_messages.first }, status: 422
         end
-      else
-        render json: { message: form.errors.full_messages.first || form.model.errors.full_messages.first }, status: 422
+      rescue StandardError => e
+        render json: { message: e.message }, status: 422 and return
       end
+
     end
     alias_method :br_update, :update
 
