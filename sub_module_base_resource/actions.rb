@@ -8,7 +8,7 @@ module SubModuleBaseResource
     include Search
 
     def index resources = nil
-      resources = find_base_resources resources
+      resources = get_params_resources resources
       if block_given?
         resources = yield(resources)
       end
@@ -19,7 +19,7 @@ module SubModuleBaseResource
     # method(:index).super_method.call
 
     def show resources = nil
-      resource = find_base_resource resources
+      resource = get_params_resource resources
       instance_variable_set("@#{resource_name(resource)}", resource)
       if block_given?
         yield(resource)
@@ -90,13 +90,13 @@ module SubModuleBaseResource
 
     protected
 
-    def find_base_resources resources = nil
+    def get_params_resources(resources = nil)
       search = (resources || resource_klass).ransack(prepare_search_condition)
       search.sorts = prepare_search_sorts if search.sorts.empty? && prepare_search_sorts.present?
       search.result(distinct: true)
     end
 
-    def find_base_resource resources = nil
+    def get_params_resource(resources = nil)
       id = respond_to?(:params) && params.is_a?(ActionController::Parameters) && params[:id]
       (resources || resource_klass).find id
     end
