@@ -8,7 +8,7 @@ module SubModuleBaseResource
     include Search
 
     def br_index(resources: nil, distinct: true, var_name: nil)
-      resources = get_params_resources(distinct: distinct, resources: resources).order(id: :desc)
+      resources = get_params_resources(distinct: distinct, resources: resources)
       if block_given?
         resources = yield(resources)
       end
