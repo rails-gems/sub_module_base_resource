@@ -103,6 +103,7 @@ module SubModuleBaseResource
       end
       var_name ||= "@#{resource_name(resource: resource)}"
       instance_variable_set(var_name, resource)
+      resource.destroy
       if block_given?
         yield resource
       else
