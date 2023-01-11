@@ -62,7 +62,7 @@ module SubModuleBaseResource
     end
     # alias_method :br_create, :create
 
-    def br_update(auto_save: true, form_class: nil, model: nil, var_name: nil, auto_render_success: false)
+    def br_update(auto_save: true, form_class: nil, model: nil, var_name: nil, auto_render_success: true)
       resource = model || get_params_resource
       if resource.blank?
         render json: { message: :not_found }, status: 422 and return
